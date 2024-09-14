@@ -100,7 +100,6 @@ inactiveHours = 1
 
 handleConnection ∷ Configuration → Pool → Ref (HashMap Int UserAvailability) → WebSocketConnection → Request → Effect Unit
 handleConnection configuration pool allUsersAvailabilityRef connection request = EA.launchAff_ do
-      liftEffect $ EC.log "sockets"
       maybeUserId ← SE.poolEffect pool do
             userId ← parseUserId
             isIt ← DM.maybe (pure false) SBU.isUserBanned userId

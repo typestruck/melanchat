@@ -1,7 +1,7 @@
 module Server.Configuration where
 
 import Prelude
-import Server.Effect
+import Server.Effect(Configuration)
 
 import Data.Int as DI
 import Data.Maybe (Maybe(..))
@@ -18,18 +18,15 @@ readConfiguration ∷ Effect Configuration
 readConfiguration =
       if production then do
             port ← parsePort <$> NP.lookupEnv "PORT"
-            variables ← DT.traverse getVariable [ "CAPTCHA_SECRET", "TOKEN_SECRET", "SALT", "EMAIL_USER", "EMAIL_HOST", "EMAIL_PASSWORD", "DATABASE_HOST", "ADMIN_SECRET" ]
+            variables ← DT.traverse getVariable [ "CAPTCHA_SECRET", "TOKEN_SECRET", "SALT", "DATABASE_HOST", "ADMIN_SECRET" ]
             case variables of
-                  [ captchaSecret, tokenSecret, salt, emailUser, emailHost, emailPassword, host, adminSecret ] →
+                  [ captchaSecret, tokenSecret, salt, host, adminSecret ] →
                         pure $
                               { port
                               , databaseHost: Just host
                               , captchaSecret
                               , tokenSecret
                               , salt
-                              , emailUser
-                              , emailHost
-                              , emailPassword
                               , adminSecret
                               }
                   _ → EE.throw "Wrong number of environment variables"
@@ -41,10 +38,7 @@ readConfiguration =
                   , captchaSecret: ""
                   , tokenSecret: "so nice, so nice, I got you"
                   , salt: "put it back together"
-                  , emailUser: ""
                   , adminSecret: ""
-                  , emailHost: ""
-                  , emailPassword: ""
                   }
       where
       getVariable name = do

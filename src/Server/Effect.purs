@@ -1,6 +1,5 @@
 module Server.Effect where
 
-import Data.Maybe (Maybe)
 import Droplet.Driver (Pool)
 import Run (AFF, Run, EFFECT)
 import Prelude
@@ -13,7 +12,7 @@ import Run as R
 import Run.Except as RE
 import Run.Reader as RR
 import Data.Maybe (Maybe(..))
-import Effect.Class
+import Effect.Class(liftEffect)
 
 type Configuration =
       { port ∷ Int
@@ -22,9 +21,6 @@ type Configuration =
       , tokenSecret ∷ String
       , salt ∷ String
       , databaseHost ∷ Maybe String
-      , emailHost ∷ String
-      , emailUser ∷ String
-      , emailPassword ∷ String
       }
 
 type BaseReader extension =

@@ -278,10 +278,10 @@ markAsDeleted isSender loggedUserId { userId, messageId }
 blockQuery ∷ Int → Int → _
 blockQuery blocker blocked = insert # into blocks (_blocker /\ _blocked) # values (blocker /\ blocked)
 
-insertReport ∷ Int → Report → ServerEffect Unit
+insertReport ∷ Int → Report → ServerEffect Int
 insertReport loggedUserId { userId, comment, reason } = SD.withTransaction $ \connection → do
       SD.executeWith connection $ blockQuery loggedUserId userId
-      SD.executeWith connection $ insert # into reports (_reporter /\ _reported /\ _reason /\ _comment) # values (loggedUserId /\ userId /\ reason /\ comment)
+      map (_.id <<< SU.fromJust) $ SD.singleWith connection $ insert # into reports (_reporter /\ _reported /\ _reason /\ _comment) # values (loggedUserId /\ userId /\ reason /\ comment) # returning _id
 
 updateTutorialCompleted ∷ Int → ServerEffect Unit
 updateTutorialCompleted loggedUserId = SD.execute $ update users # set (_completedTutorial .=. Checked true) # wher (_id .=. loggedUserId)
