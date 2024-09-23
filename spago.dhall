@@ -42,6 +42,7 @@ You can edit this file as you like.
   , "maybe"
   , "newtype"
   , "node-buffer"
+  , "node-child-process"
   , "node-fs-aff"
   , "node-http"
   , "node-process"
