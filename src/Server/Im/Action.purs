@@ -7,7 +7,7 @@ import Shared.Privilege
 
 import Data.Array as DA
 import Data.Array.NonEmpty as DAN
-import Data.DateTime (DateTime(..))
+import Data.DateTime (DateTime)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Maybe as DM
@@ -23,6 +23,7 @@ import Environment (production)
 import Run.Except as RE
 import Server.AccountValidation as SA
 import Server.Effect (BaseEffect, Configuration, ServerEffect)
+import Server.Email (Email(..))
 import Server.Email as SE
 import Server.File as SF
 import Server.Im.Database as SID
@@ -152,9 +153,9 @@ deleteChat loggedUserId ids@{ userId } = do
             Just { sender } → SID.markAsDeleted (sender == loggedUserId) loggedUserId ids
 
 reportUser ∷ Int → Report → ServerEffect Unit
-reportUser loggedUserId report@{ reason, userId } = do
-      SID.insertReport loggedUserId report
-      SE.sendEmail "contact@mero.chat" ("[REPORT] " <> show reason) $ "select * from reports where reported = " <> show userId <> ";"
+reportUser loggedUserId report = do
+      id <- SID.insertReport loggedUserId report
+      SE.sendEmail loggedUserId id Report
 
 finishTutorial ∷ Int → ServerEffect Unit
 finishTutorial loggedUserId = SID.updateTutorialCompleted loggedUserId

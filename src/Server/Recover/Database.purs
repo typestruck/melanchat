@@ -2,18 +2,19 @@ module Server.Recover.Database where
 
 import Droplet.Language
 import Prelude
-import Server.Database.Fields
-import Server.Database.Recoveries
-import Server.Database.Users
-import Server.Effect
+import Server.Database.Fields (_active, _id)
+import Server.Database.Recoveries (_recoverer, _uuid, recoveries)
+import Server.Database.Users (_password, users)
+import Server.Effect (BaseEffect, ServerEffect)
 
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Server.Database as SD
+import Shared.Unsafe as SU
 
 --REFACTOR: consider making the uuid token the primary key
-insertRecover ∷ Int → String → ServerEffect Unit
-insertRecover id token = void <<< SD.execute $ insert # into recoveries (_uuid /\ _recoverer) # values (token /\ id)
+insertRecover ∷ Int → String → ServerEffect Int
+insertRecover id token = map (_.id <<< SU.fromJust) $ SD.single $ insert # into recoveries (_uuid /\ _recoverer) # values (token /\ id) # returning _id
 
 --refactor: doesn't need to calculate the date with sql
 selectRecoverer ∷ String → ServerEffect (Maybe Int)
