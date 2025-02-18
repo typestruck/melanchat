@@ -1,3 +1,10 @@
+:root {
+    --baby-powder: #FBFEFB;
+    --dark-text-color: #1B1F3B;
+    --heading-font: "Alef", serif;
+    --merochat-red: #DB5A5D;
+}
+
 html {
     height: 100%;
     box-sizing: border-box;

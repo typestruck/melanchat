@@ -8,7 +8,6 @@ import Client.Im.Flame (MoreMessages, NextMessage, NoMessages)
 import Client.Im.Record as CIR
 import Client.Im.Scroll as CIS
 import Client.Im.WebSocket as CIW
-import Control.Alt ((<|>))
 import Data.Array ((!!), (:))
 import Data.Array as DA
 import Data.Array.NonEmpty as DAN
